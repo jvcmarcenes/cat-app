@@ -3,7 +3,7 @@
 
     <header>
       <h1>
-        Cat App
+        Yako
         <FaIcon icon="cat"/>
       </h1>
     </header>
@@ -16,7 +16,7 @@
       </div>
 
       <button class="btn" @click="loadNextImage">
-        <span class="btn-label">Random Cat</span>
+        <span class="btn-label">Random Yako</span>
         <FaIcon icon="sync-alt" />
       </button>
     </div>
