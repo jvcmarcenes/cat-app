@@ -3,7 +3,7 @@
 
     <header>
       <h1>
-        Yako
+        Cat App
         <FaIcon icon="cat"/>
       </h1>
     </header>
@@ -16,7 +16,7 @@
       </div>
 
       <button class="btn" @click="loadNextImage">
-        <span class="btn-label">Random Yako</span>
+        <span class="btn-label">Random Cat</span>
         <FaIcon icon="sync-alt" />
       </button>
     </div>
@@ -100,8 +100,8 @@
     width: 120px;
     height: 120px;
 
-    border: 16px #f3f3f3 solid;
-    border-top: 16px #3498db solid;
+    border: 16px #444 solid;
+    border-top: 16px #e2e2e2 solid;
     border-radius: 50%;
 
     animation: spin 2s ease-in-out infinite;
@@ -133,6 +133,8 @@
     width: 100%;
     height: 80vw;
 
+    background: black;
+
     justify-content: center;
     align-items: center;
 
@@ -141,7 +143,7 @@
       max-width: 100%;
       max-height: 100%;
 
-      background: black;
+      background: #f2f2f2;
     }
   }
 
@@ -171,7 +173,17 @@
   }
 
   footer {
+    position: relative;
+    bottom: 0px;
 
+    padding: 30px 50px;
+
+    background: #54f;
+    color: #f2f2f2;
+
+    >span {
+      display: block;
+    }
   }
 
 </style>
