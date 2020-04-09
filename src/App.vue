@@ -12,7 +12,7 @@
 
       <div class="image-container">
         <div v-if="state === 'loading'" class="loader" />
-        <img v-else :src="image">
+        <img id="image" ref="image" v-else :src="image" :style="imageStyle">
       </div>
 
       <button class="btn" @click="loadNextImage">
@@ -46,10 +46,11 @@
     data() {
       return {
         state: "",
-        image: ""
+        image: "",
+        imageStyle: ""
       }
     },
-    created() {
+    mounted() {
       this.loadNextImage()
     },
     methods: {
@@ -66,7 +67,11 @@
           const res = await axios.get('https://api.thecatapi.com/v1/images/search', { params } )
           this.state = "loaded"
 
-          this.image = res.data[0].url
+          const data = res.data[0]
+
+          this.imageStyle = data.width > data.height ? "width: 100%;" : "height: 100%;"
+
+          this.image = data.url
 
         } catch (err) {
           console.log(err)
@@ -84,7 +89,10 @@
   }
 
   #app {
+    position: relative;
     font-family: Arial, Helvetica, sans-serif;
+
+    min-height: 100vh;
   }
 
   @keyframes spin {
@@ -120,6 +128,7 @@
 
   .container {
     padding: 30px 0px;
+    padding-bottom: 6rem;
     margin: auto;
 
     width: 80vw;
@@ -130,7 +139,7 @@
 
     margin-bottom: 15px;
 
-    width: 100%;
+    width: 80vw;
     height: 80vw;
 
     background: black;
@@ -140,6 +149,9 @@
 
     >img {
       flex-shrink: 0;
+
+      margin: 0px;
+
       max-width: 100%;
       max-height: 100%;
 
@@ -173,16 +185,23 @@
   }
 
   footer {
-    position: relative;
-    bottom: 0px;
+    position: absolute;
+    bottom: 0;
 
-    padding: 30px 50px;
+    padding-top: 15px;
+
+    height: 5rem;
+    width: 100%;
+
 
     background: #54f;
     color: #f2f2f2;
 
     >span {
       display: block;
+
+      text-align: center;
+      line-height: 1.4rem;
     }
   }
 
