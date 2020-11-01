@@ -15,33 +15,30 @@
         <img id="image" ref="image" v-else :src="image" :style="imageStyle">
       </div>
 
-      <button class="btn" @click="loadNextImage">
-        <span class="btn-label">Random {{doggo ? 'Doggo' : 'Yako'}}</span>
-        <FaIcon icon="sync-alt" />
-      </button>
+      <div class="controls">
+        <button class="btn" @click="loadNextImage">
+          <span class="btn-label">Random {{doggo ? 'Doggo' : 'Yako'}}</span>
+          <FaIcon icon="sync-alt" />
+        </button>
 
-      <!--
-      <button class="btn" @click="downloadImage">
-        <span class="btn-label">Download Image</span>
-        <FaIcon icon="download" />
-      </button>
-      -->
+        <div class="doggo-toggle">
+          <FaIcon class="icon" :class="{active: !doggo}" icon="cat" @click="toggleDoggo(false)"/>
+          <label class="switch" >
+            <input type="checkbox" @click='toggleDoggo(!doggo)' ref="checkbox">
+            <span class="slider"></span>
+          </label>
+          <FaIcon class="icon" :class="{active: doggo}" icon="dog" @click="toggleDoggo(true)"/>
+        </div>
 
-      <div class="doggo-toggle">
-        <FaIcon class="icon" :class="{active: !doggo}" icon="cat"/>
-        <label class="switch" >
-          <input type="checkbox" @click='toggleDoggo'>
-          <span class="slider"></span>
-        </label>
-        <FaIcon class="icon" :class="{active: doggo}" icon="dog"/>
+        <div class="credits">
+          <span class="credits-author">An app by Joao Vitor Costa Marcenes</span>
+          <span class="credits-images">Images by Aden Forhsaw / theCatApi</span>
+        </div>
       </div>
 
     </div>
 
-    <footer>
-      <span class="credits-author">An app by Joao Vitor Costa Marcenes</span>
-      <span class="credits-images">Images by Aden Forhsaw / theCatApi</span>
-    </footer>
+    
 
   </div>
 </template>
@@ -68,13 +65,15 @@
         doggo: false
       }
     },
+    created() {
+      axios.defaults.headers.common['x-api-key'] = catKey
+    },
     mounted() {
       this.loadNextImage()
     },
     methods: {
       async loadNextImage() {
         try {
-          axios.defaults.headers.common['x-api-key'] = this.doggo ? dogKey : catKey
 
           const params = {
             limit: 1,
@@ -82,21 +81,24 @@
           }
 
           this.state = "loading"
-          const res = await axios.get(`https://api.the${this.doggo ? 'dog' : 'cat'}api.com/v1/images/search`, { params } )
-          this.state = "loaded"
 
+          const res = await axios.get(`https://api.the${this.doggo ? 'dog' : 'cat'}api.com/v1/images/search`, { params } )
           const data = res.data[0]
 
           this.imageStyle = data.width > data.height ? "width: 100%;" : "height: 100%;"
-
           this.image = data.url
+
+          this.state = "loaded"
 
         } catch (err) {
           console.log(err)
         }
       },
-      toggleDoggo() {
-        this.doggo = !this.doggo
+      toggleDoggo(doggo) {
+        if (this.doggo === doggo) return
+        this.$refs.checkbox.checked = doggo
+        this.doggo = doggo
+        axios.defaults.headers.common['x-api-key'] = doggo ? dogKey : catKey
         this.loadNextImage()
       }
     }
@@ -105,6 +107,8 @@
 
 <style lang="scss">
   $primary-color: rgb(73, 126, 175);
+  $off-white: #f2f2f2;
+  $white: white;
 
   * {
     margin: 0px;
@@ -124,8 +128,8 @@
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
 
-    min-height: 100vh;
-
+    //min-height: 100vh;
+    height: auto;
   }
 
   @keyframes spin {
@@ -151,8 +155,12 @@
   header {
     padding: 20px;
 
-    background: $primary-color;
-    color: #f2f2f2;
+    //background: $primary-color;
+    //color: #f2f2f2;
+    background: #f2f2f2;
+    color: $primary-color;
+
+    box-shadow: 0px 0px 8px 2px #555;
 
     text-align: center;
 
@@ -160,10 +168,11 @@
   }
 
   .container {
-    padding: 30px 0px;
-    //padding-bottom: 6rem;
+    padding-top: 30px;
+    
     margin: auto;
 
+    height: auto;
     width: 80vw;
   }
 
@@ -174,6 +183,9 @@
 
     width: 80vw;
     height: 80vw;
+
+    max-width: 28rem;
+    max-height: 28rem;
 
     background: black;
 
@@ -199,10 +211,13 @@
 
     margin-top: 15px;
 
+    height: 40px;
     width: 100%;
 
-    background: $primary-color;
-    color: #f2f2f2;
+    background: #f2f2f2;
+    color: $primary-color;
+
+    border-radius: 5px;
 
     border: none;
     outline: none;
@@ -217,23 +232,21 @@
     &-label {
       margin-right: 10px;
     }
-
-    &:hover {
-      background: lighten($primary-color, 10%);
-    }
   }
 
   .doggo-toggle {
     display: flex;
+
     flex-direction: row;
+
     justify-content: center;
     align-items: center;
 
     width: 80%;
 
-    position: absolute;
-
     padding: 10px;
+
+    margin: auto;
 
     margin-top: 15px;
     padding: auto;
@@ -244,6 +257,8 @@
       padding: 5px;
 
       color: #ccc;
+
+      transition: .4s;
 
       &.active {
         color: $primary-color
@@ -267,14 +282,10 @@
 
         &:checked {
           + .slider::before {
-            -webkit-transform: translateX(39px);
-            -ms-transform: translateX(39px);
-            transform: translateX(39px);
+            -webkit-transform: translateX(36px);
+            -ms-transform: translateX(36px);
+            transform: translateX(36px);
           }
-        }
-
-        &:focus + .slider {
-          box-shadow: 0 0 1px #2196F3;
         }
       }
 
@@ -317,23 +328,72 @@
     }
   }
 
-  footer {
-    position: absolute;
-    bottom: 0;
-
-    padding-top: 15px;
+  .credits {
+    padding-top: 25px;
 
     height: 5rem;
     width: 100%;
 
-    background: $primary-color;
-    color: #f2f2f2;
+    color: $primary-color;
+
+    font-size: 1.1em;
+    font-weight: 800;
 
     >span {
       display: block;
 
       text-align: center;
       line-height: 1.4rem;
+    }
+  }
+
+  @media (min-width: 760px) {
+    .container {
+      display: flex;
+      flex-direction: row;
+
+      flex-shrink: 0;
+
+      justify-content: center;
+      align-items: center;
+
+      width: 90%;
+    }
+
+    .image-container {
+      display: inline-flex;
+
+      height: 300px;
+      width: 300px;
+    }
+
+    .controls {
+      display: inline-block;
+
+      //position: absolute;
+
+      margin: 20px;
+
+      min-width: 330px;
+
+      >* {
+        //display: inline;
+      }
+    }
+
+    .credits {
+      font-weight: 600;
+    }
+  }
+
+  @media (min-width: 920px) {
+    .image-container {
+      height: 500px;
+      width: 500px;
+    }
+
+    .controls {
+      width: 400px;
     }
   }
 
