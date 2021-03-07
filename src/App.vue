@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-
     <header>
       <h1>
         {{doggo ? 'Doggo' : 'Yako'}}
@@ -8,14 +7,13 @@
       </h1>
     </header>
 
-    <div class="container">
-
-      <div class="image-container">
+    <main class="container">
+      <figure class="image-container">
         <div v-if="state === 'loading'" class="loader" />
         <img id="image" ref="image" v-else :src="image" :style="imageStyle">
-      </div>
+      </figure>
 
-      <div class="controls">
+      <section class="controls">
         <button class="btn" @click="loadNextImage">
           <span class="btn-label">Random {{doggo ? 'Doggo' : 'Yako'}}</span>
           <FaIcon icon="sync-alt" />
@@ -30,16 +28,13 @@
           <FaIcon class="icon" :class="{active: doggo}" icon="dog" @click="toggleDoggo(true)"/>
         </div>
 
-        <div class="credits">
+        <footer class="credits">
           <span class="credits-author">An app by Joao Vitor Costa Marcenes</span>
           <span class="credits-images">Images by Aden Forhsaw / theCatApi</span>
-        </div>
-      </div>
+        </footer>
+      </section>
 
-    </div>
-
-    
-
+    </main>
   </div>
 </template>
 
@@ -229,6 +224,12 @@
 
     cursor: pointer;
 
+    transition: .4s;
+
+    &:hover {
+      box-shadow: 0px 0px 6px 0px #555
+    }
+
     &-label {
       margin-right: 10px;
     }
@@ -257,6 +258,8 @@
       padding: 5px;
 
       color: #ccc;
+
+      cursor: pointer;
 
       transition: .4s;
 
@@ -375,10 +378,6 @@
       margin: 20px;
 
       min-width: 330px;
-
-      >* {
-        //display: inline;
-      }
     }
 
     .credits {
